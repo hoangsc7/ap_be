@@ -1,16 +1,25 @@
 const express = require('express');
-const app = express();
-const db = require('./models');
-const userRoutes = require('./routes/news.routes');
-const PORT = 3000;
 const cors = require('cors');
-app.use(cors());
+const sequelize = require('./config/db.config');
+const newsRoutes = require('./routes/news.routes');
 
+const app = express();
+const PORT = process.env.PORT || 8080;
+
+app.use(cors({
+    origin: 'https://www.anphatlaichau.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 app.use(express.json());
-app.use(userRoutes);
 
-db.sequelize.sync().then(() => {
-    app.listen(PORT, () => {
-        console.log('Server is running at http://localhost:3000');
-    });
+app.use('/news', newsRoutes);
+
+sequelize.sync().then(() => {
+    console.log('Database synced');
+});
+
+
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
 });
