@@ -12,7 +12,10 @@ const News = sequelize.define('news', {
     content: {
         type: DataTypes.TEXT,
     },
-    layout: {
+    html: {
+        type: DataTypes.TEXT,
+    },
+    json: {
         type: DataTypes.JSON,
     }
 });

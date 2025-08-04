@@ -9,8 +9,8 @@ const createNews = async (req, res) => {
     }
 }
 const getAllNews = async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // mặc định trang 1
-    const limit = parseInt(req.query.limit) || 11; // mặc định 5 item
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 11;
     const offset = (page - 1) * limit;
 
     try {
@@ -46,9 +46,42 @@ const getNewsById = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const putNews = async (req, res) => {
+    const { id } = req.params;
+    const { title, img, content, json, html } = req.body;
+
+    try {
+        const news = await News.findByPk(id);
+        if (!news) return res.status(404).json({ message: "News not found" });
+
+        await news.update({ title, img, content, json, html });
+        res.status(200).json({ message: "News updated successfully", news });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const deleteNews = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const news = await News.findByPk(id);
+        if (!news) return res.status(404).json({ message: "News not found" });
+
+        await news.destroy();
+        res.status(200).json({ message: "News deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 
 module.exports = {
     createNews,
     getAllNews,
     getNewsById,
+    putNews,
+    deleteNews,
 }
